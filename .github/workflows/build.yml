@@ -1,0 +1,24 @@
+name: Java CI with Gradle
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.1
+      - name: Install libpcap-dev
+        run: sudo apt install libpcap-dev
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3.1.1
+        with:
+          distribution: adopt
+          java-version: 11
+      - name: Build
+        run: ./gradlew build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: pcap
+          path: "build/libs/pcap*.jar"

@@ -1,0 +1,83 @@
+plugins {
+  id("java")
+  id("checkstyle")
+  id("com.github.spotbugs").version("5.0.7")
+  id("org.cadixdev.licenser").version("0.6.1")
+}
+
+setGroup("net.elytrium")
+setVersion("1.0.0-SNAPSHOT")
+
+sourceSets {
+  main.getResources().srcDir("build/natives/lib")
+}
+
+compileJava {
+  getOptions().setEncoding("UTF-8")
+  getOptions().getCompilerArgs().addAll("-h", file("src/main/c/include/jni"))
+}
+
+java {
+  setSourceCompatibility(JavaVersion.VERSION_1_8)
+  setTargetCompatibility(JavaVersion.VERSION_1_8)
+}
+
+repositories {
+  mavenCentral()
+}
+
+license {
+  setHeader(file("HEADER.txt"))
+}
+
+checkstyle {
+  setToolVersion("10.1")
+  setConfigFile(file("${this.getRootDir()}/config/checkstyle/checkstyle.xml"))
+  setConfigProperties("configDirectory": "${this.getRootDir()}/config/checkstyle")
+
+  // The build should immediately fail if we have errors.
+  setMaxErrors(0)
+  setMaxWarnings(0)
+}
+
+spotbugsMain {
+  setExcludeFilter(file("${this.getRootDir()}/config/spotbugs/suppressions.xml"))
+
+  reports {
+    html {
+      getRequired().set(true)
+      getOutputLocation().set(file("${this.getBuildDir()}/reports/spotbugs/main/spotbugs.html"))
+      setStylesheet("fancy-hist.xsl")
+    }
+  }
+}
+
+task compileNative {
+  dependsOn(compileJava)
+
+  doLast({
+    exec({
+      commandLine(
+          "sh", "-c",
+          "mkdir -p build/natives && " +
+          "cd build/natives && " +
+          "cmake ../../src/main/c -DCMAKE_BUILD_TYPE=Release && " +
+          "cmake --build . --config Release"
+      )
+    })
+  })
+}
+
+clean {
+  doFirst({
+    delete(fileTree("src/main/c/include/jni") {
+      include("*.h")
+    })
+  })
+}
+
+tasks.withType(JavaExec) {
+  systemProperty("java.library.path", "${project.rootDir}/build/natives/lib")
+}
+
+processResources.dependsOn(compileNative)
