@@ -1,8 +1,9 @@
 plugins {
-  id("java")
+  id("java-library")
   id("checkstyle")
   id("com.github.spotbugs").version("5.0.7")
   id("org.cadixdev.licenser").version("0.6.1")
+  id("maven-publish")
 }
 
 setGroup("net.elytrium")
@@ -74,6 +75,60 @@ clean {
       include("*.h")
     })
   })
+}
+
+task javadocJar(type: Jar) {
+  getArchiveClassifier().set("javadoc")
+  from(javadoc)
+}
+
+javadoc {
+  MinimalJavadocOptions options = getOptions()
+  options.setEncoding("UTF-8")
+  options.setCharSet("UTF-8")
+  // Mark sources as Java 11 source compatible.
+  options.setSource("11")
+  options.links("https://docs.oracle.com/en/java/javase/11/docs/api/", "https://jd.adventure.kyori.net/nbt/4.11.0/")
+
+  options.addStringOption("Xdoclint:none", "-quiet")
+
+  // Remove "undefined" from search paths when generating javadoc for a non-modular project. (JDK-8215291)
+  if (JavaVersion.current() == JavaVersion.VERSION_11) {
+    options.addBooleanOption("-no-module-directories", true)
+  }
+}
+
+task sourcesJar(type: Jar) {
+  getArchiveClassifier().set("sources")
+  from(sourceSets.main.getAllSource())
+}
+
+publishing {
+  repositories {
+    maven {
+      credentials {
+        setUsername(System.getenv("PUBLISH_USERNAME"))
+        setPassword(System.getenv("PUBLISH_PASSWORD"))
+      }
+
+      setName("elytrium-repo")
+      setUrl("https://maven.elytrium.net/repo/")
+    }
+  }
+
+  publications {
+    maven(MavenPublication) {
+      from(components.java)
+
+      artifact(javadocJar)
+      artifact(sourcesJar)
+    }
+  }
+}
+
+artifacts {
+  archives(javadocJar)
+  archives(sourcesJar)
 }
 
 tasks.withType(JavaExec) {
