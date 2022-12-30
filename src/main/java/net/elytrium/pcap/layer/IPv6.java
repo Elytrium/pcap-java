@@ -24,7 +24,7 @@ import net.elytrium.pcap.layer.data.IpProtocol;
 import net.elytrium.pcap.layer.exception.LayerDecodeException;
 import net.elytrium.pcap.layer.exception.LayerEncodeException;
 
-public class IPv6 extends IPv6Header {
+public class IPv6 extends IPv6Header implements IP {
 
   private static final int SIZE = 40;
 
@@ -82,6 +82,7 @@ public class IPv6 extends IPv6Header {
     return SIZE;
   }
 
+  @Override
   public int getVersion() {
     return this.version;
   }
@@ -122,18 +123,22 @@ public class IPv6 extends IPv6Header {
     this.hopLimit = hopLimit;
   }
 
+  @Override
   public InetAddress getSrcAddress() {
     return this.srcAddress;
   }
 
+  @Override
   public void setSrcAddress(InetAddress srcAddress) {
     this.srcAddress = srcAddress;
   }
 
+  @Override
   public InetAddress getDstAddress() {
     return this.dstAddress;
   }
 
+  @Override
   public void setDstAddress(InetAddress dstAddress) {
     this.dstAddress = dstAddress;
   }

@@ -28,7 +28,7 @@ import net.elytrium.pcap.layer.data.IpProtocol;
 import net.elytrium.pcap.layer.exception.LayerDecodeException;
 import net.elytrium.pcap.layer.exception.LayerEncodeException;
 
-public class IPv4 implements Layer {
+public class IPv4 implements IP {
 
   private int version;
   private int ihl;
@@ -129,6 +129,7 @@ public class IPv4 implements Layer {
     return this.protocol != null ? this.protocol.getLayer() : null;
   }
 
+  @Override
   public int getVersion() {
     return this.version;
   }
@@ -225,18 +226,22 @@ public class IPv4 implements Layer {
     this.checksum = checksum;
   }
 
+  @Override
   public InetAddress getSrcAddress() {
     return this.srcAddress;
   }
 
+  @Override
   public void setSrcAddress(InetAddress srcAddress) {
     this.srcAddress = srcAddress;
   }
 
+  @Override
   public InetAddress getDstAddress() {
     return this.dstAddress;
   }
 
+  @Override
   public void setDstAddress(InetAddress dstAddress) {
     this.dstAddress = dstAddress;
   }
