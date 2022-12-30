@@ -24,7 +24,7 @@ import net.elytrium.pcap.layer.data.EthernetProtocol;
 import net.elytrium.pcap.layer.exception.LayerDecodeException;
 import net.elytrium.pcap.layer.exception.LayerEncodeException;
 
-public class Ethernet implements Layer {
+public class Ethernet implements EthernetProtocolHeader {
 
   private static final int SIZE = 14;
 
@@ -83,10 +83,12 @@ public class Ethernet implements Layer {
     this.srcAddress = srcAddress;
   }
 
+  @Override
   public EthernetProtocol getProtocol() {
     return this.protocol;
   }
 
+  @Override
   public void setProtocol(EthernetProtocol protocol) {
     this.protocol = protocol;
   }
