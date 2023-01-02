@@ -27,6 +27,10 @@ typedef struct {
 
 thread_local char errbuf[PCAP_ERRBUF_SIZE];
 
+JNIEXPORT jboolean JNICALL Java_net_elytrium_pcap_PcapNative_isJavaCritical(JNIEnv *env, jclass class) {
+  return 0;
+}
+
 JNIEXPORT jstring JNICALL Java_net_elytrium_pcap_PcapNative_getErrorBuffer(JNIEnv *env, jclass class) {
   return (*env)->NewStringUTF(env, errbuf);
 }

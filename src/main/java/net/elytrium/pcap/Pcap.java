@@ -31,6 +31,12 @@ import net.elytrium.pcap.layer.data.LinkType;
 
 public class Pcap {
 
+  private static final boolean IS_JAVA_CRITICAL = PcapNative.isJavaCritical();
+
+  public static boolean isJavaCritical() {
+    return IS_JAVA_CRITICAL;
+  }
+
   public static void init() throws PcapException {
     String error = PcapNative.init();
     if (error != null) {

@@ -46,6 +46,8 @@ public class PcapNative {
     }
   }
 
+  public static native boolean isJavaCritical();
+
   public static native String getErrorBuffer();
 
   public static native String init();
