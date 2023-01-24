@@ -7,7 +7,7 @@ plugins {
 }
 
 setGroup("net.elytrium")
-setVersion("1.0.1-SNAPSHOT")
+setVersion("1.0.1")
 
 sourceSets {
   main.getResources().srcDir("build/natives/lib")

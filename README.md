@@ -79,7 +79,7 @@ Sample code:
     }
 
     dependencies {
-        implementation("net.elytrium:pcap:1.0.0")
+        implementation("net.elytrium:pcap:1.0.1")
     }
 ```
 
