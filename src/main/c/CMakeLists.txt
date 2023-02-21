@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
-set(CMAKE_C_COMPILER "clang")
-
 project(pcap-native LANGUAGES C)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_subdirectory(libpcap)
+set_property(TARGET pcap PROPERTY SOVERSION)
+set_property(TARGET pcap PROPERTY VERSION)
 
 set(LIB_OUTPUT_DIR ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
@@ -39,4 +39,4 @@ set(CMAKE_C_FLAGS_RELEASE "-O2 -Wall -Werror")
 include_directories(include)
 file(GLOB SOURCES src/*.c)
 add_library(pcap-native SHARED ${SOURCES})
-target_link_libraries(pcap-native pcap_static -fuse-ld=lld)
+target_link_libraries(pcap-native pcap)
