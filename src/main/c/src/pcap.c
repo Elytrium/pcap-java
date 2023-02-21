@@ -35,14 +35,6 @@ JNIEXPORT jstring JNICALL Java_net_elytrium_pcap_PcapNative_getErrorBuffer(JNIEn
   return (*env)->NewStringUTF(env, errbuf);
 }
 
-JNIEXPORT jstring JNICALL Java_net_elytrium_pcap_PcapNative_init(JNIEnv *env, jclass class) {
-  if (pcap_init(PCAP_CHAR_ENC_UTF_8, errbuf)) {
-    return (*env)->NewStringUTF(env, errbuf);
-  } else {
-    return NULL;
-  }
-}
-
 JNIEXPORT jint JNICALL Java_net_elytrium_pcap_PcapNative_lookupnet(JNIEnv *env, jclass class, jstring jdevice, jintArray jdata) {
   uint32_t net;
   uint32_t mask;

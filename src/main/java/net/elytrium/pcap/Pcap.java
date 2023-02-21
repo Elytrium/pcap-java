@@ -20,6 +20,8 @@ package net.elytrium.pcap;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.elytrium.pcap.data.PcapDevice;
 import net.elytrium.pcap.data.PcapError;
 import net.elytrium.pcap.data.PcapPacketHeader;
@@ -31,6 +33,7 @@ import net.elytrium.pcap.layer.data.LinkType;
 
 public class Pcap {
 
+  private static final Pattern VERSION_PATTERN = Pattern.compile("\\d+\\.(\\d+)");
   private static final boolean IS_JAVA_CRITICAL = PcapNative.isJavaCritical();
 
   public static boolean isJavaCritical() {
@@ -38,9 +41,18 @@ public class Pcap {
   }
 
   public static void init() throws PcapException {
-    String error = PcapNative.init();
-    if (error != null) {
-      throw new PcapException(error);
+    Matcher matcher = VERSION_PATTERN.matcher(libVersion());
+    if (!matcher.find()) {
+      return;
+    }
+
+    int version = Integer.parseInt(matcher.group(1));
+    if (version >= 10) {
+      PcapNative.loadNativeLibrary("pcap-init");
+      String error = PcapNative.init();
+      if (error != null) {
+        throw new PcapException(error);
+      }
     }
   }
 

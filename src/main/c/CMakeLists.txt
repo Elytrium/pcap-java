@@ -37,6 +37,10 @@ endif()
 set(CMAKE_C_FLAGS_RELEASE "-O2 -Wall -Werror")
 
 include_directories(include)
-file(GLOB SOURCES src/*.c)
-add_library(pcap-native SHARED ${SOURCES})
+include_directories(libpcap)
+
+add_library(pcap-native SHARED src/pcap.c src/pcap_javacritical.c)
 target_link_libraries(pcap-native pcap)
+
+add_library(pcap-init SHARED src/pcap_init.c)
+target_link_libraries(pcap-init pcap)

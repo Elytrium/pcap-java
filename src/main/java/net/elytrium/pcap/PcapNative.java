@@ -17,30 +17,33 @@
 
 package net.elytrium.pcap;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class PcapNative {
 
   static {
+    loadNativeLibrary("pcap-native");
+  }
+
+  protected static void loadNativeLibrary(String name) {
     try {
-      System.loadLibrary("pcap-native");
+      System.loadLibrary(name);
     } catch (UnsatisfiedLinkError e) {
-      try (InputStream inputStream = PcapNative.class.getResourceAsStream("/libpcap-native.so")) {
+      try (InputStream inputStream = PcapNative.class.getResourceAsStream("/lib" + name + ".so")) {
         if (inputStream == null) {
           throw new IOException();
         }
 
-        File directory = Files.createTempDirectory("pcap-native").toFile();
-        File libraryFile = new File(directory, "libpcap-native.so");
-        Files.copy(inputStream, libraryFile.toPath());
-        System.load(libraryFile.getAbsolutePath());
-        libraryFile.deleteOnExit();
+        Path libraryFile = Files.createTempFile(name, ".so");
+        Files.copy(inputStream, libraryFile, StandardCopyOption.REPLACE_EXISTING);
+        System.load(libraryFile.toAbsolutePath().toString());
+        libraryFile.toFile().deleteOnExit();
       } catch (IOException ex) {
-        ex.printStackTrace();
         throw e;
       }
     }
