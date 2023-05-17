@@ -22,22 +22,16 @@ Sample code:
     handle.setFilter(filter);
     filter.free();
 
-    LinkType datalink = this.handle.datalink();
-    new Thread(() -> {
+    LinkType datalink = handle.datalink();
+    handle.loop(-1, (packetHeader, rawPacket) -> {
         try {
-            this.handle.loop(-1, (packetHeader, rawPacket) -> {
-                try {
-                    Packet packet = new Packet();
-                    packet.decode(rawPacket, datalink);
-                    System.out.println(packet);
-                    dumper.dump(packetHeader, rawPacket);
-                    dumper.flush();
-                } catch (LayerDecodeException | PcapException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (PcapException e) {
-        e.printStackTrace();
+            Packet packet = new Packet();
+            packet.decode(rawPacket, datalink);
+            System.out.println(packet);
+            dumper.dump(packetHeader, rawPacket);
+            dumper.flush();
+        } catch (LayerDecodeException | PcapException e) {
+            e.printStackTrace();
         }
     });
     
