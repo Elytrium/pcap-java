@@ -20,6 +20,7 @@ package net.elytrium.pcap.layer.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import net.elytrium.pcap.layer.ARP;
 import net.elytrium.pcap.layer.IPv4;
 import net.elytrium.pcap.layer.IPv6;
 import net.elytrium.pcap.layer.Layer;
@@ -34,7 +35,7 @@ public enum EthernetProtocol {
   ERSPAN2(0x22EB),
   IP(0x0800, IPv4::new),
   X25(0x0805),
-  ARP(0x0806),
+  ARP(0x0806, ARP::new),
   BPQ(0x08FF),
   IEEEPUP(0x0A00),
   IEEEPUPAT(0x0A01),
