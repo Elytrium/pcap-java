@@ -18,6 +18,7 @@
 package net.elytrium.pcap.layer.data;
 
 import java.util.function.Supplier;
+import net.elytrium.pcap.layer.ICMP;
 import net.elytrium.pcap.layer.IPv4;
 import net.elytrium.pcap.layer.IPv6;
 import net.elytrium.pcap.layer.IPv6Destination;
@@ -30,7 +31,7 @@ import net.elytrium.pcap.layer.UDP;
 
 public enum IpProtocol {
   HOPOPT(IPv6HopByHop::new),
-  ICMP,
+  ICMP(ICMP::new),
   IGMP,
   GGP,
   IP_IN_IP(IPv4::new),
